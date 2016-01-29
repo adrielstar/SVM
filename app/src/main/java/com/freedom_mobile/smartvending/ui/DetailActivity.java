@@ -82,7 +82,8 @@ public class DetailActivity extends AppCompatActivity {
                     startActivityForResult(turnBTon,1);
                 }
 
-                    Toast.makeText(getApplicationContext(), "...In onResume - Attempting client connect...", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "...In onResume - Attempting client connect...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "... client connect Smart Vending...", Toast.LENGTH_LONG).show();
 
                     // Set up a pointer to the remote node using it's address.
                     BluetoothDevice device = myBluetooth.getRemoteDevice(address);
@@ -102,11 +103,11 @@ public class DetailActivity extends AppCompatActivity {
                     myBluetooth.cancelDiscovery();
 
                     // Establish the connection.  This will block until it connects.
-                    Toast.makeText(getApplicationContext(), "...Connecting to Remote...", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "...Connecting to Remote...", Toast.LENGTH_LONG).show();
 
                     try {
                         btSocket.connect();
-                        Toast.makeText(getApplicationContext(), "...Connection established and data link opened...", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "...Connection established and data link opened...", Toast.LENGTH_LONG).show();
 
                     } catch (IOException e) {
                         try {
@@ -117,7 +118,7 @@ public class DetailActivity extends AppCompatActivity {
                     }
 
                     // Create a data stream so we can talk to server.
-                    Toast.makeText(getApplicationContext(), "...Creating Socket...", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "...Creating Socket...", Toast.LENGTH_LONG).show();
 
                     try {
                         outStream = btSocket.getOutputStream();
@@ -125,10 +126,28 @@ public class DetailActivity extends AppCompatActivity {
                         errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
                     }
 
+                    turnOnRelay();
+
+                // on Pause
+                    Toast.makeText(getApplicationContext(), "...Succesfully...", Toast.LENGTH_LONG).show();
+
+                    if (outStream != null) {
+                        try {
+                            outStream.flush();
+                        } catch (IOException e) {
+                            errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");
+                        }
+                    }
+
+                    try     {
+                        btSocket.close();
+                    } catch (IOException e2) {
+                        errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
+                    }
 
 
 
-                turnOnRelay();
+
             }
         });
 
@@ -170,27 +189,6 @@ public class DetailActivity extends AppCompatActivity {
             {
                 msg("Error");
             }
-        }
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Toast.makeText(getApplicationContext(), "...In onPause()...", Toast.LENGTH_LONG).show();
-
-        if (outStream != null) {
-            try {
-                outStream.flush();
-            } catch (IOException e) {
-                errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");
-            }
-        }
-
-        try     {
-            btSocket.close();
-        } catch (IOException e2) {
-            errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
         }
     }
 

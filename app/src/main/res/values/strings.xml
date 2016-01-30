@@ -98,4 +98,5 @@
     </string>
     <string name="description_label">Description:</string>
     <string name="buy_this_product">Buy This Product</string>
+    <string name="title_activity_add_money">AddMoneyActivity</string>
 </resources>

@@ -144,10 +144,6 @@ public class DetailActivity extends AppCompatActivity {
                     } catch (IOException e2) {
                         errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
                     }
-
-
-
-
             }
         });
 
@@ -165,13 +161,6 @@ public class DetailActivity extends AppCompatActivity {
         mProductPriceLabel.setText(String.format("Price: %s", String.valueOf(productPrice)));
         mProductDescriptionLabel.setText(productDescription);
     }
-
-
-
-    // start Blue
-
-
-
 
     // Turn relay on
     private void turnOnRelay()
@@ -199,8 +188,6 @@ public class DetailActivity extends AppCompatActivity {
         msg.show();
         finish();
     }
-
-
 
     // fast way to call Toast
     private void msg(String s)

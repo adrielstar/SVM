@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.freedom_mobile.smartvending"
-          xmlns:android="http://schemas.android.com/apk/res/android">
-          <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-          <uses-permission android:name="android.permission.BLUETOOTH" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.freedom_mobile.smartvending">
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +16,9 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -27,8 +28,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.freedom_mobile.smartvending.ui.MainActivity"/>
+                android:value="com.freedom_mobile.smartvending.ui.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.AddMoneyActivity"
+            android:label="@string/title_activity_add_money"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

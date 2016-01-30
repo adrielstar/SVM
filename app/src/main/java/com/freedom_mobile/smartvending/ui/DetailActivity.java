@@ -128,7 +128,9 @@ public class DetailActivity extends AppCompatActivity {
         try {
             btSocket.connect();
             // Toast.makeText(getApplicationContext(), "...Connection established and data link opened...", Toast.LENGTH_LONG).show();
-
+            turnOnRelay();
+            // on Pause
+            Toast.makeText(getApplicationContext(), "...Succesfully...", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             try {
                 btSocket.close();
@@ -142,14 +144,11 @@ public class DetailActivity extends AppCompatActivity {
 
         try {
             outStream = btSocket.getOutputStream();
+
         } catch (IOException e) {
             errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
         }
 
-        turnOnRelay();
-
-        // on Pause
-        Toast.makeText(getApplicationContext(), "...Succesfully...", Toast.LENGTH_LONG).show();
 
         if (outStream != null) {
             try {
@@ -175,7 +174,7 @@ public class DetailActivity extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(), "product id:" + id , Toast.LENGTH_LONG).show();
                 btSocket.getOutputStream().write(id.getBytes());
             } catch (IOException e) {
-                msg("Error");
+//                msg("Error Device");
             }
         }
     }

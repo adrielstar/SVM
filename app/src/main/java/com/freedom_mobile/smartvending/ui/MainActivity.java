@@ -1,38 +1,31 @@
 package com.freedom_mobile.smartvending.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.freedom_mobile.smartvending.R;
-import com.freedom_mobile.smartvending.adapters.ProductAdapter;
 import com.freedom_mobile.smartvending.model.Product;
-import com.freedom_mobile.smartvending.utils.RecyclerTouchListener;
-import com.freedom_mobile.smartvending.utils.SpacesItemDecoration;
+import com.parse.ParseAnalytics;
+import com.parse.ParseUser;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final int PORTRAIT_MODE = 2;
-    public static final int LANDSCAPE_MODE = 3;
-    private Context mContext;
+    public static final String TAG = MainActivity.class.getSimpleName();
 
-    @Bind(R.id.productRecyclerView) RecyclerView mRecyclerView;
+    private MainFragment mMainFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +33,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mContext = this;
+        ParseAnalytics.trackAppOpened(getIntent());
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if(currentUser == null) {
+            navigateToLogin();
+        }else{
+            Log.i(TAG, currentUser.getUsername());
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,32 +67,17 @@ public class MainActivity extends AppCompatActivity
             );
         }
 
-        float recyclerViewSpacing = getResources().getDimension(R.dimen.recyclerViewPadding);
+        mMainFragment = new MainFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, mMainFragment)
+                .commit();
+    }
 
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration((int) recyclerViewSpacing));
-        mRecyclerView.setHasFixedSize(true);
-        if (this.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT) {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, PORTRAIT_MODE));
-        } else {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, LANDSCAPE_MODE));
-        }
-        mRecyclerView.setAdapter(new ProductAdapter(this, Product.productHashMap));
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView,
-                new RecyclerTouchListener.ClickListener() {
-                    @Override
-                    public void onClick(View view, int position) {
-                        Intent detailIntent = new Intent(mContext, DetailActivity.class);
-                        detailIntent.putExtra("id", String.valueOf(position));
-                        startActivity(detailIntent);
-                    }
-
-                    @Override
-                    public void onLongClick(View view, int position) {
-
-                    }
-                }));
+    private void navigateToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override
@@ -132,20 +118,18 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-            Intent intent = new Intent(this, AddMoneyActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id) {
+            case R.id.nav_product:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, mMainFragment)
+                        .commit();
+                break;
+            case R.id.nav_account:
+                AccountFragment accountFragment = new AccountFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, accountFragment)
+                        .commit();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

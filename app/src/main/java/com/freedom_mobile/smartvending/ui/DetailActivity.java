@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -36,6 +38,8 @@ public class DetailActivity extends AppCompatActivity {
     @Bind(R.id.product_buy_button)
     Button mBtnBuyProduct;
 
+    private CoordinatorLayout coordinatorLayout;
+
     //Blue
     private BluetoothAdapter myBluetooth = null;
     private BluetoothSocket btSocket = null;
@@ -55,6 +59,9 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .coordinatorLayout);
 
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
@@ -92,8 +99,8 @@ public class DetailActivity extends AppCompatActivity {
 
         if (myBluetooth == null) {
             // Show a message. that the device has no bluetooth adapter
-            Toast.makeText(getApplicationContext(), "Bluetooth Device Not Available", Toast.LENGTH_LONG).show();
-
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Bluetooth Device Not Available", Snackbar.LENGTH_LONG);
+            snackbar.show();
             //finish apk
             finish();
         } else if (!myBluetooth.isEnabled()) {
@@ -101,6 +108,7 @@ public class DetailActivity extends AppCompatActivity {
             Intent turnBTon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnBTon, 1);
         }
+
 
         // Toast.makeText(getApplicationContext(), "...In onResume - Attempting client connect...", Toast.LENGTH_LONG).show();
         Toast.makeText(getApplicationContext(), "... client connect Smart Vending...", Toast.LENGTH_LONG).show();
@@ -130,12 +138,14 @@ public class DetailActivity extends AppCompatActivity {
             // Toast.makeText(getApplicationContext(), "...Connection established and data link opened...", Toast.LENGTH_LONG).show();
             turnOnRelay();
             // on Pause
-            Toast.makeText(getApplicationContext(), "...Succesfully...", Toast.LENGTH_LONG).show();
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "...Succesfully...", Snackbar.LENGTH_LONG);
+            snackbar.show();
         } catch (IOException e) {
             try {
                 btSocket.close();
             } catch (IOException e2) {
-                Toast.makeText(getApplicationContext(), "Fatal Error\", \"In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".", Toast.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, "Fatal Error\", \"...Connection Failed try again..", Snackbar.LENGTH_LONG);
+                snackbar.show();
             }
         }
 
@@ -146,7 +156,9 @@ public class DetailActivity extends AppCompatActivity {
             outStream = btSocket.getOutputStream();
 
         } catch (IOException e) {
-            errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "...Connection Failed try again...", Snackbar.LENGTH_LONG);
+            snackbar.show();
+//            errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
         }
 
 
@@ -154,14 +166,14 @@ public class DetailActivity extends AppCompatActivity {
             try {
                 outStream.flush();
             } catch (IOException e) {
-                errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");
+                errorExit("Fatal Error", "...Connection Failed try again...");
             }
         }
 
         try {
             btSocket.close();
         } catch (IOException e2) {
-            errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
+            errorExit("Fatal Error", "...Connection Failed try again...");
         }
     }
 
@@ -180,13 +192,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void errorExit(String title, String message) {
-        Toast msg = Toast.makeText(getBaseContext(),
-                title + " - " + message, Toast.LENGTH_SHORT);
-        msg.show();
-        finish();
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, title + " - " + message, Snackbar.LENGTH_LONG);
+        snackbar.show();
+        //finish();
     }
 
-    // fast way to call Toast
     private void msg(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
     }

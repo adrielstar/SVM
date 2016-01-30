@@ -57,7 +57,7 @@
             android:drawableStart="@drawable/ic_action_21_512"
             android:hint="@string/hint_amount_eur"
             android:singleLine="true"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:textColorHint="@color/light_gray"
             android:textSize="17sp">
 

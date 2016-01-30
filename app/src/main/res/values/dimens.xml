@@ -9,4 +9,8 @@
     <dimen name="recyclerViewPadding">1dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="login_vertical_margin">32dp</dimen>
+    <dimen name="login_vertical_padding">10dp</dimen>
+    <dimen name="login_horizontal_padding">10dp</dimen>
+    <dimen name="sign_up_vertical_margin">16dp</dimen>
 </resources>
